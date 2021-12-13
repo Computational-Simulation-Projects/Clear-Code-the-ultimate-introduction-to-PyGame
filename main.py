@@ -24,16 +24,17 @@ test_font = pygame.font.Font('./font/Pixeltype.ttf', 50)
 # .convert() converts the surface to the display format... it's fast
 sky_surface = pygame.image.load('./graphics/Sky.png').convert()
 ground_surface = pygame.image.load('./graphics/Ground.png').convert()
+
 # True = anti-aliased && aniti-aliased is slow but looks better by smoothening the jagged edges by averaging pixels
 # here ani-aliasing is turned off since it is a pixel art
-text_surface = test_font.render('Runner Game', False, 'Black')
+score_surf = test_font.render('Runner Game', False, (64, 64, 64))
+score_rect = score_surf.get_rect(center=(width // 2, 50))
 
 # here convert() is not needed since the sprite needs transparent background
 # convert_alpha() considers th transparency / alpha values too
 snail_surf = pygame.image.load(
     './graphics/Snail/snail1.png').convert_alpha()
 snail_rect = snail_surf.get_rect(bottomright=(800, 300))
-
 
 player_surf = pygame.image.load(
     './graphics/Player/player_walk_1.png').convert_alpha()
@@ -60,9 +61,17 @@ while game_running:
     # blit works on the order of the interpreter... top to bottom
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 300))
-    screen.blit(text_surface, (width // 2 - text_surface.get_width() // 2, 50))
+
+    # 2 times drawn to cover the score text since having width argument in pygame.draw.rect() stops coloring the center
+    pygame.draw.rect(screen, '#c0e8ec', score_rect)
+    pygame.draw.rect(screen, '#c0e8ec', score_rect, width=10)
+
+    screen.blit(score_surf, score_rect)
     screen.blit(snail_surf, snail_rect)
     screen.blit(player_surf, player_rect)
+
+    # pygame.draw.line(screen, 'Gold', (0, 0), pygame.mouse.get_pos(), 10) # creates a line from (0, 0) to the mouse position
+    # pygame.draw.ellipse(screen, 'Brown', pygame.Rect(50, 200, 100, 100)) # creates an ellipse
 
     # update everything
 
