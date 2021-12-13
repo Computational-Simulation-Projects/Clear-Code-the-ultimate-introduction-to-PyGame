@@ -50,6 +50,14 @@ while game_running:
             # the game quits when the user has clicked the close button of the window
             game_running = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                print('space key pressed')
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                print('space key released')
+
         # if event.type == pygame.MOUSEMOTION:
         #     if player_rect.collidepoint(event.pos):
         #         print('Collision!')
@@ -80,6 +88,11 @@ while game_running:
         snail_rect.left = 800
     else:
         snail_rect.x -= 4
+
+    # get all the keyboard input
+    # keys = pygame.key.get_pressed()
+    # if keys[pygame.K_SPACE]:
+    #     print('Space pressed')
 
     # check if the player has collided with the snail or not
     # if player_rect.colliderect(snail_rect):
