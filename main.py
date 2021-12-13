@@ -44,6 +44,7 @@ player_gravity = 0
 
 # create the game loop
 game_running = True
+game_active = True
 while game_running:
     # event loop for all the player inputs
     for event in pygame.event.get():
@@ -51,50 +52,60 @@ while game_running:
             # the game quits when the user has clicked the close button of the window
             game_running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
+        if game_active:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
+                        player_gravity = -20
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
                     player_gravity = -20
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
-                player_gravity = -20
+        else:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_active = True
+                snail_rect.left = 800
 
-    # draw all the elements
-    # fill the screen with black to reset the screen every frame
-    screen.fill('Black')
-    # blit (Block-Image-Transfer) is used to draw the surface on another
-    # blit works on the order of the interpreter... top to bottom
-    screen.blit(sky_surface, (0, 0))
-    screen.blit(ground_surface, (0, 300))
+    if game_active:
+        # draw all the elements
+        # fill the screen with black to reset the screen every frame
+        screen.fill('Black')
+        # blit (Block-Image-Transfer) is used to draw the surface on another
+        # blit works on the order of the interpreter... top to bottom
+        screen.blit(sky_surface, (0, 0))
+        screen.blit(ground_surface, (0, 300))
 
-    # 2 times drawn to cover the score text since having width argument in pygame.draw.rect() stops coloring the center
-    pygame.draw.rect(screen, '#c0e8ec', score_rect)
-    pygame.draw.rect(screen, '#c0e8ec', score_rect, width=10)
+        # 2 times drawn to cover the score text since having width argument in pygame.draw.rect() stops coloring the center
+        pygame.draw.rect(screen, '#c0e8ec', score_rect)
+        pygame.draw.rect(screen, '#c0e8ec', score_rect, width=10)
 
-    screen.blit(score_surf, score_rect)
-    screen.blit(snail_surf, snail_rect)
-    screen.blit(player_surf, player_rect)
+        screen.blit(score_surf, score_rect)
+        screen.blit(snail_surf, snail_rect)
+        screen.blit(player_surf, player_rect)
 
-    # pygame.draw.line(screen, 'Gold', (0, 0), pygame.mouse.get_pos(), 10) # creates a line from (0, 0) to the mouse position
-    # pygame.draw.ellipse(screen, 'Brown', pygame.Rect(50, 200, 100, 100)) # creates an ellipse
+        # update everything
 
-    # update everything
+        # check the motion of the snail
+        if snail_rect.right < 0:
+            snail_rect.left = 800
+        else:
+            snail_rect.x -= 4
 
-    # check the motion of the snail
-    if snail_rect.right < 0:
-        snail_rect.left = 800
+        # update the player gravity and position
+        player_gravity += 1
+        player_rect.y += player_gravity
+
+        # check if the player is on the ground
+        if player_rect.bottom >= 300:
+            player_gravity = 0
+            player_rect.bottom = 300
+
+        if player_rect.colliderect(snail_rect):
+            game_active = False
+
     else:
-        snail_rect.x -= 4
-
-    # update the player gravity and position
-    player_gravity += 1
-    player_rect.y += player_gravity
-
-    # check if the player is on the ground
-    if player_rect.bottom >= 300:
-        player_gravity = 0
-        player_rect.bottom = 300
+        screen.fill('Yellow')
 
     pygame.display.update()  # updates the display
     clock.tick(60)  # 60 frames per second
