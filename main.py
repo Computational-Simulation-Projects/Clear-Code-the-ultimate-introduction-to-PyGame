@@ -3,6 +3,24 @@ from sys import exit
 
 from pygame import mouse
 
+
+def display_score():
+    # gives time in miliseconds since pygame.init() was called
+    current_time = (pygame.time.get_ticks() // 1000) - start_time
+
+    # True = anti-aliased && aniti-aliased is slow but looks better by smoothening the jagged edges by averaging pixels
+    # here ani-aliasing is turned off since it is a pixel art
+    score_surf = test_font.render(
+        f'Score: {current_time}', False, (64, 64, 64))
+    score_rect = score_surf.get_rect(center=(width // 2, 50))
+
+    # 2 times drawn to cover the score text since having width argument in pygame.draw.rect() stops coloring the center
+    pygame.draw.rect(screen, '#c0e8ec', score_rect)
+    pygame.draw.rect(screen, '#c0e8ec', score_rect, width=10)
+
+    screen.blit(score_surf, score_rect)
+
+
 # initialize pygame
 pygame.init()
 
@@ -25,11 +43,6 @@ test_font = pygame.font.Font('./font/Pixeltype.ttf', 50)
 sky_surface = pygame.image.load('./graphics/Sky.png').convert()
 ground_surface = pygame.image.load('./graphics/Ground.png').convert()
 
-# True = anti-aliased && aniti-aliased is slow but looks better by smoothening the jagged edges by averaging pixels
-# here ani-aliasing is turned off since it is a pixel art
-score_surf = test_font.render('Runner Game', False, (64, 64, 64))
-score_rect = score_surf.get_rect(center=(width // 2, 50))
-
 # here convert() is not needed since the sprite needs transparent background
 # convert_alpha() considers th transparency / alpha values too
 snail_surf = pygame.image.load(
@@ -45,6 +58,7 @@ player_gravity = 0
 # create the game loop
 game_running = True
 game_active = True
+start_time = 0
 while game_running:
     # event loop for all the player inputs
     for event in pygame.event.get():
@@ -65,22 +79,22 @@ while game_running:
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
+                start_time = (pygame.time.get_ticks() // 1000)
                 snail_rect.left = 800
 
     if game_active:
         # draw all the elements
         # fill the screen with black to reset the screen every frame
         screen.fill('Black')
+
         # blit (Block-Image-Transfer) is used to draw the surface on another
         # blit works on the order of the interpreter... top to bottom
         screen.blit(sky_surface, (0, 0))
         screen.blit(ground_surface, (0, 300))
 
-        # 2 times drawn to cover the score text since having width argument in pygame.draw.rect() stops coloring the center
-        pygame.draw.rect(screen, '#c0e8ec', score_rect)
-        pygame.draw.rect(screen, '#c0e8ec', score_rect, width=10)
+        # display the score
+        display_score()
 
-        screen.blit(score_surf, score_rect)
         screen.blit(snail_surf, snail_rect)
         screen.blit(player_surf, player_rect)
 
