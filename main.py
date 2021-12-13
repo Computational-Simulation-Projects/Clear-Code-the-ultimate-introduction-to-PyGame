@@ -28,9 +28,15 @@ text_surface = test_font.render('Runner Game', False, 'Black')
 
 # here convert() is not needed since the sprite needs transparent background
 # convert_alpha() considers th transparency / alpha values too
-snail_surface = pygame.image.load(
-    './graphics/snail/snail1.png').convert_alpha()
-snail_x_pos = 700
+snail_surf = pygame.image.load(
+    './graphics/Snail/snail1.png').convert_alpha()
+snail_rect = snail_surf.get_rect(bottomright=(800, 300))
+
+
+player_surf = pygame.image.load(
+    './graphics/Player/player_walk_1.png').convert_alpha()
+# takes a surface and returns a rectangle
+player_rect = player_surf.get_rect(midbottom=(80, 300))
 
 # create the game loop
 game_running = True
@@ -49,13 +55,14 @@ while game_running:
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 300))
     screen.blit(text_surface, (width // 2 - text_surface.get_width() // 2, 50))
-    screen.blit(snail_surface, (snail_x_pos, 265))
+    screen.blit(snail_surf, snail_rect)
+    screen.blit(player_surf, player_rect)
 
     # update everything
-    if snail_x_pos < -100:
-        snail_x_pos = 800
+    if snail_rect.right < 0:
+        snail_rect.left = 800
     else:
-        snail_x_pos -= 4
+        snail_rect.x -= 4
 
     pygame.display.update()  # updates the display
     clock.tick(60)  # 60 frames per second
