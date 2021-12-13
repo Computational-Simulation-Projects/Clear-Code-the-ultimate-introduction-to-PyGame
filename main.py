@@ -40,6 +40,7 @@ player_surf = pygame.image.load(
     './graphics/Player/player_walk_1.png').convert_alpha()
 # takes a surface and returns a rectangle
 player_rect = player_surf.get_rect(midbottom=(80, 300))
+player_gravity = 0
 
 # create the game loop
 game_running = True
@@ -50,17 +51,14 @@ while game_running:
             # the game quits when the user has clicked the close button of the window
             game_running = False
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
+                    player_gravity = -20
+
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                print('space key pressed')
-
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:
-                print('space key released')
-
-        # if event.type == pygame.MOUSEMOTION:
-        #     if player_rect.collidepoint(event.pos):
-        #         print('Collision!')
+            if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
+                player_gravity = -20
 
     # draw all the elements
     # fill the screen with black to reset the screen every frame
@@ -89,20 +87,14 @@ while game_running:
     else:
         snail_rect.x -= 4
 
-    # get all the keyboard input
-    # keys = pygame.key.get_pressed()
-    # if keys[pygame.K_SPACE]:
-    #     print('Space pressed')
+    # update the player gravity and position
+    player_gravity += 1
+    player_rect.y += player_gravity
 
-    # check if the player has collided with the snail or not
-    # if player_rect.colliderect(snail_rect):
-    #     print('Collision!')
-    #     game_running = False
-
-    # mouse_pos = pygame.mouse.get_pos()
-    # if player_rect.collidepoint(mouse_pos):
-    #     # returns a tuple of booleans of the mouse buttons left, middle, right
-    #     print(pygame.mouse.get_pressed())
+    # check if the player is on the ground
+    if player_rect.bottom >= 300:
+        player_gravity = 0
+        player_rect.bottom = 300
 
     pygame.display.update()  # updates the display
     clock.tick(60)  # 60 frames per second
