@@ -9,10 +9,11 @@ width = 800  # in pixels
 height = 400
 screen = pygame.display.set_mode((width, height))
 
-# change the title of the window
+# set the title of the window
 pygame.display.set_caption('Runner')
 
-# set the title of the window
+# create a clock
+clock = pygame.time.Clock()
 
 # create the game loop
 game_running = True
@@ -26,6 +27,7 @@ while game_running:
     # draw all the elements
     # update everything
     pygame.display.update()  # updates the display
+    clock.tick(60)  # 60 frames per second
 
 # quits the initialized pygame
 pygame.quit()
