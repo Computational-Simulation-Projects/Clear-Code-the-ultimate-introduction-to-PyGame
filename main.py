@@ -1,6 +1,8 @@
 import pygame
 from sys import exit
 
+from pygame import mouse
+
 # initialize pygame
 pygame.init()
 
@@ -47,6 +49,10 @@ while game_running:
             # the game quits when the user has clicked the close button of the window
             game_running = False
 
+        # if event.type == pygame.MOUSEMOTION:
+        #     if player_rect.collidepoint(event.pos):
+        #         print('Collision!')
+
     # draw all the elements
     # fill the screen with black to reset the screen every frame
     screen.fill('Black')
@@ -59,10 +65,22 @@ while game_running:
     screen.blit(player_surf, player_rect)
 
     # update everything
+
+    # check the motion of the snail
     if snail_rect.right < 0:
         snail_rect.left = 800
     else:
         snail_rect.x -= 4
+
+    # check if the player has collided with the snail or not
+    # if player_rect.colliderect(snail_rect):
+    #     print('Collision!')
+    #     game_running = False
+
+    # mouse_pos = pygame.mouse.get_pos()
+    # if player_rect.collidepoint(mouse_pos):
+    #     # returns a tuple of booleans of the mouse buttons left, middle, right
+    #     print(pygame.mouse.get_pressed())
 
     pygame.display.update()  # updates the display
     clock.tick(60)  # 60 frames per second
