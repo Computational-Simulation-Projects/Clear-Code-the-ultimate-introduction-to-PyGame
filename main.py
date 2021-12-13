@@ -19,6 +19,7 @@ def display_score():
     pygame.draw.rect(screen, '#c0e8ec', score_rect, width=10)
 
     screen.blit(score_surf, score_rect)
+    return current_time
 
 
 # initialize pygame
@@ -30,7 +31,7 @@ height = 400
 screen = pygame.display.set_mode((width, height))
 
 # set the title of the window
-pygame.display.set_caption('Runner')
+pygame.display.set_caption('Pixel Runner')
 
 # create a clock
 clock = pygame.time.Clock()
@@ -55,10 +56,29 @@ player_surf = pygame.image.load(
 player_rect = player_surf.get_rect(midbottom=(80, 300))
 player_gravity = 0
 
+# intro screen
+game_title_surf = test_font.render('Pixel Runner', False, (111, 196, 169))
+game_title_rect = game_title_surf.get_rect(
+    center=(width // 2, height // 4 - 50))
+
+player_stand_surf = pygame.image.load(
+    './graphics/Player/player_stand.png').convert_alpha()
+player_stand_surf = pygame.transform.rotozoom(player_stand_surf, 0, 2)
+player_stand_rect = player_stand_surf.get_rect(
+    center=(width // 2, height // 2))
+
+game_message_surf = test_font.render(
+    'Press SPACE to run...', False, (111, 196, 169))
+game_message_rect = game_message_surf.get_rect(
+    center=(width // 2, (height * 3) // 4 + 50))
+
+
 # create the game loop
 game_running = True
-game_active = True
+game_active = False
 start_time = 0
+score = 0
+
 while game_running:
     # event loop for all the player inputs
     for event in pygame.event.get():
@@ -93,7 +113,7 @@ while game_running:
         screen.blit(ground_surface, (0, 300))
 
         # display the score
-        display_score()
+        score = display_score()
 
         screen.blit(snail_surf, snail_rect)
         screen.blit(player_surf, player_rect)
@@ -119,7 +139,22 @@ while game_running:
             game_active = False
 
     else:
-        screen.fill('Yellow')
+        screen.fill((94, 129, 162))
+
+        screen.blit(game_title_surf, game_title_rect)
+
+        if score == 0:
+            screen.blit(player_stand_surf, player_stand_rect)
+
+        else:
+            player_stand_rect.y = height // 2 - 110
+            screen.blit(player_stand_surf, player_stand_rect)
+            score_message = test_font.render(
+                f'Your Score: {score}', False, (111, 196, 169))
+            score_message_rect = score_message.get_rect(
+                center=(width // 2, (height * 3) // 4))
+            screen.blit(score_message, score_message_rect)
+        screen.blit(game_message_surf, game_message_rect)
 
     pygame.display.update()  # updates the display
     clock.tick(60)  # 60 frames per second
