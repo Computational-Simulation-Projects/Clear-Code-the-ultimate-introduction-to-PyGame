@@ -1,6 +1,6 @@
 import pygame
 from sys import exit
-from random import randint
+from random import randint, choice
 
 
 def display_score():  # display score
@@ -143,7 +143,7 @@ game_message_rect = game_message_surf.get_rect(
 
 # timers
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 1500)
+pygame.time.set_timer(obstacle_timer, 2000)
 
 snail_animation_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(snail_animation_timer, 500)
@@ -175,7 +175,7 @@ while game_running:
                     player_gravity = -20
 
             if event.type == obstacle_timer:
-                if randint(0, 2) == 0:
+                if randint(0, 2):
                     obstacle_rect_list.append(
                         snail_surf.get_rect(bottomright=(randint(900, 1400), 300)))
                 else:
@@ -184,7 +184,6 @@ while game_running:
 
             if event.type == snail_animation_timer:
                 if snail_frame_index == 0:
-                    # print('triggered')
                     snail_frame_index = 1
                 else:
                     snail_frame_index = 0
@@ -243,7 +242,7 @@ while game_running:
 
         # setting the game environment for the next game
         obstacle_rect_list = []
-        player_rect.y = 300
+        player_rect.midbottom = (80, 300)
         player_gravity = 0
 
         if score == 0:
