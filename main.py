@@ -109,6 +109,9 @@ player_stand_surf = pygame.transform.rotozoom(player_stand_surf, 0, 2)
 player_stand_rect = player_stand_surf.get_rect(
     center=(width // 2, height // 2))
 
+player_jump_sound = pygame.mixer.Sound('./audio/jump.mp3')
+player_jump_sound.set_volume(0.1)  # 0-1
+
 
 # obstacles
 obstacle_rect_list = []
@@ -156,6 +159,9 @@ game_running = True
 game_active = False
 start_time = 0
 score = 0
+bg_music = pygame.mixer.Sound('./audio/music.wav')
+bg_music.set_volume(0.1)
+bg_music.play(loops=-1)
 
 while game_running:
     # event loop for all the player inputs
@@ -169,10 +175,12 @@ while game_running:
                 if event.button == 1:
                     if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
                         player_gravity = -20
+                        player_jump_sound.play()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
                     player_gravity = -20
+                    player_jump_sound.play()
 
             if event.type == obstacle_timer:
                 if randint(0, 2):

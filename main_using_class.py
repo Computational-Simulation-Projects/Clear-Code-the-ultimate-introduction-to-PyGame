@@ -24,17 +24,22 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midbottom=(80, 300))
         self.gravity = 0
 
+        self.jump_sound = pygame.mixer.Sound('./audio/jump.mp3')
+        self.jump_sound.set_volume(0.1)  # 0-1
+
     def player_input(self):
         keys = pygame.key.get_pressed()
         mouse_pressed = pygame.mouse.get_pressed()
 
         if keys[pygame.K_SPACE] and self.rect.bottom >= 300:
             self.gravity = -20
+            self.jump_sound.play()
 
         if mouse_pressed[0]:
             mouse_pos = pygame.mouse.get_pos()
             if self.rect.collidepoint(mouse_pos) and self.rect.bottom >= 300:
                 self.gravity = -20
+                self.jump_sound.play()
 
     def apply_gravity(self):
         self.gravity += 1
@@ -187,6 +192,9 @@ game_running = True
 game_active = False
 start_time = 0
 score = 0
+bg_music = pygame.mixer.Sound('./audio/music.wav')
+bg_music.set_volume(0.1)
+bg_music.play(loops=-1)
 
 while game_running:
     # event loop for all the player inputs
